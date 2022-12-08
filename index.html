@@ -1,0 +1,1118 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        #map {
+            width: 1647px;
+            height: 852px;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script><script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="data/Main_0.js"></script>
+        <script src="data/Valve_1.js"></script>
+        <script src="data/Other_Facilities_2.js"></script>
+        <script src="data/AttanagallaWSS_Boundary_3.js"></script>
+        <script src="data/RoadEdge_4.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        })
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+            map.setMaxBounds(map.getBounds());
+        }
+        function pop_Main_0(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? autolinker.link(feature.properties['OBJECTID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID'] !== null ? autolinker.link(feature.properties['ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['StUtilityID'] !== null ? autolinker.link(feature.properties['StUtilityID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['EnUtilityID'] !== null ? autolinker.link(feature.properties['EnUtilityID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['RoadID'] !== null ? autolinker.link(feature.properties['RoadID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Laid_On'] !== null ? autolinker.link(feature.properties['Laid_On'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LifeCycle'] !== null ? autolinker.link(feature.properties['LifeCycle'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Hyperlink'] !== null ? autolinker.link(feature.properties['Hyperlink'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Material'] !== null ? autolinker.link(feature.properties['Material'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['InnerDiameter'] !== null ? autolinker.link(feature.properties['InnerDiameter'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OuterDiameter'] !== null ? autolinker.link(feature.properties['OuterDiameter'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Type'] !== null ? autolinker.link(feature.properties['Type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Status'] !== null ? autolinker.link(feature.properties['Status'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Remarks'] !== null ? autolinker.link(feature.properties['Remarks'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DN'] !== null ? autolinker.link(feature.properties['DN'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DSource'] !== null ? autolinker.link(feature.properties['DSource'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Creator'] !== null ? autolinker.link(feature.properties['Creator'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Created'] !== null ? autolinker.link(feature.properties['Created'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Editor'] !== null ? autolinker.link(feature.properties['Editor'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Edited'] !== null ? autolinker.link(feature.properties['Edited'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Enabled'] !== null ? autolinker.link(feature.properties['Enabled'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DMA_NO'] !== null ? autolinker.link(feature.properties['DMA_NO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Shape_Length'] !== null ? autolinker.link(feature.properties['Shape_Length'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DRG_NO'] !== null ? autolinker.link(feature.properties['DRG_NO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Road_Name'] !== null ? autolinker.link(feature.properties['Road_Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Contractor'] !== null ? autolinker.link(feature.properties['Contractor'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Type_of_pipe_piece'] !== null ? autolinker.link(feature.properties['Type_of_pipe_piece'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Main_0_0() {
+            return {
+                pane: 'pane_Main_0',
+                opacity: 1,
+                color: 'rgba(0,0,244,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: false,
+            }
+        }
+        map.createPane('pane_Main_0');
+        map.getPane('pane_Main_0').style.zIndex = 400;
+        map.getPane('pane_Main_0').style['mix-blend-mode'] = 'normal';
+        var layer_Main_0 = new L.geoJson(json_Main_0, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_Main_0',
+            layerName: 'layer_Main_0',
+            pane: 'pane_Main_0',
+            onEachFeature: pop_Main_0,
+            style: style_Main_0_0,
+        });
+        bounds_group.addLayer(layer_Main_0);
+        map.addLayer(layer_Main_0);
+        function pop_Valve_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? autolinker.link(feature.properties['OBJECTID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID'] !== null ? autolinker.link(feature.properties['ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Elevation'] !== null ? autolinker.link(feature.properties['Elevation'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['RoadID'] !== null ? autolinker.link(feature.properties['RoadID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DateIn'] !== null ? autolinker.link(feature.properties['DateIn'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LifeCycle'] !== null ? autolinker.link(feature.properties['LifeCycle'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SRotation'] !== null ? autolinker.link(feature.properties['SRotation'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Hyperlink'] !== null ? autolinker.link(feature.properties['Hyperlink'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ValveSize'] !== null ? autolinker.link(feature.properties['ValveSize'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ValveType'] !== null ? autolinker.link(feature.properties['ValveType'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['VStatus'] !== null ? autolinker.link(feature.properties['VStatus'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['No_Turns'] !== null ? autolinker.link(feature.properties['No_Turns'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ClosedD'] !== null ? autolinker.link(feature.properties['ClosedD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Remarks'] !== null ? autolinker.link(feature.properties['Remarks'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Motorised'] !== null ? autolinker.link(feature.properties['Motorised'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DSource'] !== null ? autolinker.link(feature.properties['DSource'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Creator'] !== null ? autolinker.link(feature.properties['Creator'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Created'] !== null ? autolinker.link(feature.properties['Created'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Editor'] !== null ? autolinker.link(feature.properties['Editor'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Edited'] !== null ? autolinker.link(feature.properties['Edited'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Enabled'] !== null ? autolinker.link(feature.properties['Enabled'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Vcategory'] !== null ? autolinker.link(feature.properties['Vcategory'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DMA'] !== null ? autolinker.link(feature.properties['DMA'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DPR_No'] !== null ? autolinker.link(feature.properties['DPR_No'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DRG_NO'] !== null ? autolinker.link(feature.properties['DRG_NO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Road_Name'] !== null ? autolinker.link(feature.properties['Road_Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Contractor'] !== null ? autolinker.link(feature.properties['Contractor'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Status'] !== null ? autolinker.link(feature.properties['Status'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['GD_Level'] !== null ? autolinker.link(feature.properties['GD_Level'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['IV_Level'] !== null ? autolinker.link(feature.properties['IV_Level'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['created_user'] !== null ? autolinker.link(feature.properties['created_user'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['created_date'] !== null ? autolinker.link(feature.properties['created_date'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['last_edited_user'] !== null ? autolinker.link(feature.properties['last_edited_user'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['last_edited_date'] !== null ? autolinker.link(feature.properties['last_edited_date'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Valve_1_0(feature) {
+            switch(String(feature.properties['ValveType'])) {
+                case 'B/V/W/G':
+                    return {
+                pane: 'pane_Valve_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(211,146,96,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'B/V/W/L':
+                    return {
+                pane: 'pane_Valve_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(204,25,103,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'DAV':
+                    return {
+                pane: 'pane_Valve_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(56,233,233,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'SAV':
+                    return {
+                pane: 'pane_Valve_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(113,211,128,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'SV_GV':
+                    return {
+                pane: 'pane_Valve_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(153,26,203,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'UNK':
+                    return {
+                pane: 'pane_Valve_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(158,202,56,1.0)',
+                interactive: false,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_Valve_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(85,105,240,1.0)',
+                interactive: false,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Valve_1');
+        map.getPane('pane_Valve_1').style.zIndex = 401;
+        map.getPane('pane_Valve_1').style['mix-blend-mode'] = 'normal';
+        var layer_Valve_1 = new L.geoJson(json_Valve_1, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_Valve_1',
+            layerName: 'layer_Valve_1',
+            pane: 'pane_Valve_1',
+            onEachFeature: pop_Valve_1,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Valve_1_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Valve_1);
+        map.addLayer(layer_Valve_1);
+        function pop_Other_Facilities_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? autolinker.link(feature.properties['OBJECTID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID'] !== null ? autolinker.link(feature.properties['ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Elevation'] !== null ? autolinker.link(feature.properties['Elevation'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['RoadID'] !== null ? autolinker.link(feature.properties['RoadID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DateIn'] !== null ? autolinker.link(feature.properties['DateIn'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LifeCycle'] !== null ? autolinker.link(feature.properties['LifeCycle'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SRotation'] !== null ? autolinker.link(feature.properties['SRotation'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Hyperlink'] !== null ? autolinker.link(feature.properties['Hyperlink'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OWFType'] !== null ? autolinker.link(feature.properties['OWFType'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Remarks'] !== null ? autolinker.link(feature.properties['Remarks'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DN'] !== null ? autolinker.link(feature.properties['DN'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DSource'] !== null ? autolinker.link(feature.properties['DSource'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Creator'] !== null ? autolinker.link(feature.properties['Creator'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Created'] !== null ? autolinker.link(feature.properties['Created'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Editor'] !== null ? autolinker.link(feature.properties['Editor'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Edited'] !== null ? autolinker.link(feature.properties['Edited'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Enabled'] !== null ? autolinker.link(feature.properties['Enabled'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Depth'] !== null ? autolinker.link(feature.properties['Depth'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Material'] !== null ? autolinker.link(feature.properties['Material'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Chainage'] !== null ? autolinker.link(feature.properties['Chainage'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['GD_Level'] !== null ? autolinker.link(feature.properties['GD_Level'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['IV_Level'] !== null ? autolinker.link(feature.properties['IV_Level'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Size_Remark'] !== null ? autolinker.link(feature.properties['Size_Remark'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DMA'] !== null ? autolinker.link(feature.properties['DMA'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DPR_No'] !== null ? autolinker.link(feature.properties['DPR_No'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DRG_NO'] !== null ? autolinker.link(feature.properties['DRG_NO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Road_Name'] !== null ? autolinker.link(feature.properties['Road_Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Contractor'] !== null ? autolinker.link(feature.properties['Contractor'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Status'] !== null ? autolinker.link(feature.properties['Status'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Pipe_Joint_Type'] !== null ? autolinker.link(feature.properties['Pipe_Joint_Type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Other_Facilities_2_0(feature) {
+            switch(String(feature.properties['OWFType'])) {
+                case 'Be_DF':
+                    return {
+                pane: 'pane_Other_Facilities_2',
+                radius: 2.0,
+                opacity: 1,
+                color: 'rgba(128,17,25,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(204,36,109,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Be_So':
+                    return {
+                pane: 'pane_Other_Facilities_2',
+                radius: 2.0,
+                opacity: 1,
+                color: 'rgba(128,17,25,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(200,64,182,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Be_SR':
+                    return {
+                pane: 'pane_Other_Facilities_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(128,17,25,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(207,123,62,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'EC':
+                    return {
+                pane: 'pane_Other_Facilities_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(128,17,25,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(100,205,158,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Re_DF':
+                    return {
+                pane: 'pane_Other_Facilities_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(128,17,25,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(175,201,103,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Re_So':
+                    return {
+                pane: 'pane_Other_Facilities_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(128,17,25,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(231,23,27,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Tee_DSF':
+                    return {
+                pane: 'pane_Other_Facilities_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(128,17,25,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(126,143,231,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Tee_DSL':
+                    return {
+                pane: 'pane_Other_Facilities_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(128,17,25,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(149,125,215,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Tee_DSLR':
+                    return {
+                pane: 'pane_Other_Facilities_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(128,17,25,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,149,210,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Tee_DSR':
+                    return {
+                pane: 'pane_Other_Facilities_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(128,17,25,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(113,221,128,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Tee_F':
+                    return {
+                pane: 'pane_Other_Facilities_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(128,17,25,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(155,31,208,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Tee_FL':
+                    return {
+                pane: 'pane_Other_Facilities_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(128,17,25,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,223,221,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Tee_So':
+                    return {
+                pane: 'pane_Other_Facilities_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(128,17,25,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(202,182,70,1.0)',
+                interactive: false,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_Other_Facilities_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(128,17,25,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(77,218,16,1.0)',
+                interactive: false,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Other_Facilities_2');
+        map.getPane('pane_Other_Facilities_2').style.zIndex = 402;
+        map.getPane('pane_Other_Facilities_2').style['mix-blend-mode'] = 'normal';
+        var layer_Other_Facilities_2 = new L.geoJson(json_Other_Facilities_2, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_Other_Facilities_2',
+            layerName: 'layer_Other_Facilities_2',
+            pane: 'pane_Other_Facilities_2',
+            onEachFeature: pop_Other_Facilities_2,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Other_Facilities_2_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Other_Facilities_2);
+        map.addLayer(layer_Other_Facilities_2);
+        function pop_AttanagallaWSS_Boundary_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DMA_ATT_ID'] !== null ? autolinker.link(feature.properties['DMA_ATT_ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Area'] !== null ? autolinker.link(feature.properties['Area'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ShapeArea'] !== null ? autolinker.link(feature.properties['ShapeArea'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_AttanagallaWSS_Boundary_3_0() {
+            return {
+                pane: 'pane_AttanagallaWSS_Boundary_3',
+                opacity: 1,
+                color: 'rgba(53,121,177,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 4.0,
+                fillOpacity: 0,
+                interactive: false,
+            }
+        }
+        map.createPane('pane_AttanagallaWSS_Boundary_3');
+        map.getPane('pane_AttanagallaWSS_Boundary_3').style.zIndex = 403;
+        map.getPane('pane_AttanagallaWSS_Boundary_3').style['mix-blend-mode'] = 'normal';
+        var layer_AttanagallaWSS_Boundary_3 = new L.geoJson(json_AttanagallaWSS_Boundary_3, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_AttanagallaWSS_Boundary_3',
+            layerName: 'layer_AttanagallaWSS_Boundary_3',
+            pane: 'pane_AttanagallaWSS_Boundary_3',
+            onEachFeature: pop_AttanagallaWSS_Boundary_3,
+            style: style_AttanagallaWSS_Boundary_3_0,
+        });
+        bounds_group.addLayer(layer_AttanagallaWSS_Boundary_3);
+        map.addLayer(layer_AttanagallaWSS_Boundary_3);
+        function pop_RoadEdge_4(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? autolinker.link(feature.properties['OBJECTID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Entity'] !== null ? autolinker.link(feature.properties['Entity'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Handle'] !== null ? autolinker.link(feature.properties['Handle'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Layer'] !== null ? autolinker.link(feature.properties['Layer'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LyrFrzn'] !== null ? autolinker.link(feature.properties['LyrFrzn'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LyrLock'] !== null ? autolinker.link(feature.properties['LyrLock'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LyrOn'] !== null ? autolinker.link(feature.properties['LyrOn'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LyrVPFrzn'] !== null ? autolinker.link(feature.properties['LyrVPFrzn'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LyrHandle'] !== null ? autolinker.link(feature.properties['LyrHandle'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Color'] !== null ? autolinker.link(feature.properties['Color'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['EntColor'] !== null ? autolinker.link(feature.properties['EntColor'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LyrColor'] !== null ? autolinker.link(feature.properties['LyrColor'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['BlkColor'] !== null ? autolinker.link(feature.properties['BlkColor'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Linetype'] !== null ? autolinker.link(feature.properties['Linetype'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['EntLinetype'] !== null ? autolinker.link(feature.properties['EntLinetype'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LyrLnType'] !== null ? autolinker.link(feature.properties['LyrLnType'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['BlkLinetype'] !== null ? autolinker.link(feature.properties['BlkLinetype'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Elevation'] !== null ? autolinker.link(feature.properties['Elevation'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Thickness'] !== null ? autolinker.link(feature.properties['Thickness'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LineWt'] !== null ? autolinker.link(feature.properties['LineWt'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['EntLineWt'] !== null ? autolinker.link(feature.properties['EntLineWt'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LyrLineWt'] !== null ? autolinker.link(feature.properties['LyrLineWt'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['BlkLineWt'] !== null ? autolinker.link(feature.properties['BlkLineWt'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['RefName'] !== null ? autolinker.link(feature.properties['RefName'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LTScale'] !== null ? autolinker.link(feature.properties['LTScale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ExtX'] !== null ? autolinker.link(feature.properties['ExtX'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ExtY'] !== null ? autolinker.link(feature.properties['ExtY'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ExtZ'] !== null ? autolinker.link(feature.properties['ExtZ'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DocName'] !== null ? autolinker.link(feature.properties['DocName'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DocPath'] !== null ? autolinker.link(feature.properties['DocPath'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DocType'] !== null ? autolinker.link(feature.properties['DocType'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DocVer'] !== null ? autolinker.link(feature.properties['DocVer'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Shape_Length'] !== null ? autolinker.link(feature.properties['Shape_Length'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_RoadEdge_4_0() {
+            return {
+                pane: 'pane_RoadEdge_4',
+                opacity: 1,
+                color: 'rgba(198,185,120,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: false,
+            }
+        }
+        map.createPane('pane_RoadEdge_4');
+        map.getPane('pane_RoadEdge_4').style.zIndex = 404;
+        map.getPane('pane_RoadEdge_4').style['mix-blend-mode'] = 'normal';
+        var layer_RoadEdge_4 = new L.geoJson(json_RoadEdge_4, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_RoadEdge_4',
+            layerName: 'layer_RoadEdge_4',
+            pane: 'pane_RoadEdge_4',
+            onEachFeature: pop_RoadEdge_4,
+            style: style_RoadEdge_4_0,
+        });
+        bounds_group.addLayer(layer_RoadEdge_4);
+        map.addLayer(layer_RoadEdge_4);
+        map.on("zoomend", function(e) {
+            if (map.getZoom() <= 19 && map.getZoom() >= 16) {
+                map.addLayer(layer_Valve_1);
+            } else if (map.getZoom() > 19 || map.getZoom() < 16) {
+                map.removeLayer(layer_Valve_1);
+            }
+            if (map.getZoom() <= 19 && map.getZoom() >= 19) {
+                map.addLayer(layer_Other_Facilities_2);
+            } else if (map.getZoom() > 19 || map.getZoom() < 19) {
+                map.removeLayer(layer_Other_Facilities_2);
+            }
+        });
+            if (map.getZoom() <= 19 && map.getZoom() >= 16) {
+                map.addLayer(layer_Valve_1);
+            } else if (map.getZoom() > 19 || map.getZoom() < 16) {
+                map.removeLayer(layer_Valve_1);
+            }
+            if (map.getZoom() <= 19 && map.getZoom() >= 19) {
+                map.addLayer(layer_Other_Facilities_2);
+            } else if (map.getZoom() > 19 || map.getZoom() < 19) {
+                map.removeLayer(layer_Other_Facilities_2);
+            }
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/RoadEdge_4.png" /> RoadEdge': layer_RoadEdge_4,'<img src="legend/AttanagallaWSS_Boundary_3.png" /> AttanagallaWSS_Boundary': layer_AttanagallaWSS_Boundary_3,'Other_Facilities<br /><table><tr><td style="text-align: center;"><img src="legend/Other_Facilities_2_BeDF0.png" /></td><td>Be_DF</td></tr><tr><td style="text-align: center;"><img src="legend/Other_Facilities_2_BeSo1.png" /></td><td>Be_So</td></tr><tr><td style="text-align: center;"><img src="legend/Other_Facilities_2_BeSR2.png" /></td><td>Be_SR</td></tr><tr><td style="text-align: center;"><img src="legend/Other_Facilities_2_EC3.png" /></td><td>EC</td></tr><tr><td style="text-align: center;"><img src="legend/Other_Facilities_2_ReDF4.png" /></td><td>Re_DF</td></tr><tr><td style="text-align: center;"><img src="legend/Other_Facilities_2_ReSo5.png" /></td><td>Re_So</td></tr><tr><td style="text-align: center;"><img src="legend/Other_Facilities_2_TeeDSF6.png" /></td><td>Tee_DSF</td></tr><tr><td style="text-align: center;"><img src="legend/Other_Facilities_2_TeeDSL7.png" /></td><td>Tee_DSL</td></tr><tr><td style="text-align: center;"><img src="legend/Other_Facilities_2_TeeDSLR8.png" /></td><td>Tee_DSLR</td></tr><tr><td style="text-align: center;"><img src="legend/Other_Facilities_2_TeeDSR9.png" /></td><td>Tee_DSR</td></tr><tr><td style="text-align: center;"><img src="legend/Other_Facilities_2_TeeF10.png" /></td><td>Tee_F</td></tr><tr><td style="text-align: center;"><img src="legend/Other_Facilities_2_TeeFL11.png" /></td><td>Tee_FL</td></tr><tr><td style="text-align: center;"><img src="legend/Other_Facilities_2_TeeSo12.png" /></td><td>Tee_So</td></tr><tr><td style="text-align: center;"><img src="legend/Other_Facilities_2_13.png" /></td><td></td></tr></table>': layer_Other_Facilities_2,'Valve<br /><table><tr><td style="text-align: center;"><img src="legend/Valve_1_ButterFlyValvewithGearbox0.png" /></td><td>Butter Fly Valve with Gearbox</td></tr><tr><td style="text-align: center;"><img src="legend/Valve_1_ButterFlyValvewithLeaver1.png" /></td><td>Butter Fly Valve with Leaver</td></tr><tr><td style="text-align: center;"><img src="legend/Valve_1_DoubleOrificeAV2.png" /></td><td>Double Orifice AV</td></tr><tr><td style="text-align: center;"><img src="legend/Valve_1_SingleOrificeAV3.png" /></td><td>Single Orifice AV</td></tr><tr><td style="text-align: center;"><img src="legend/Valve_1_SluiceValve4.png" /></td><td>Sluice Valve</td></tr><tr><td style="text-align: center;"><img src="legend/Valve_1_Unknown5.png" /></td><td>Unknown</td></tr><tr><td style="text-align: center;"><img src="legend/Valve_1_6.png" /></td><td></td></tr></table>': layer_Valve_1,'<img src="legend/Main_0.png" /> Main': layer_Main_0,}).addTo(map);
+        map.on("zoomend", function(){
+
+                if (map.hasLayer(layer_Valve_1)) {
+                    if (map.getZoom() <= 18 && map.getZoom() >= 19) {
+                        layer_Valve_1.eachLayer(function (layer) {
+                            layer.openTooltip();
+                        });
+                    } else {
+                        layer_Valve_1.eachLayer(function (layer) {
+                            layer.closeTooltip();
+                        });
+                    }
+                }
+        });
+        setBounds();
+        var i = 0;
+        layer_Main_0.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((exp_label_Main_0_eval_expression(context) !== null?String('<div style="color: #000000; font-size: 10pt; font-family: \'MS Shell Dlg 2\', sans-serif;">' + exp_label_Main_0_eval_expression(context)) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_Main_0'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_Valve_1.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['Vcategory'] !== null?String('<div style="color: #000000; font-size: 10pt; font-family: \'Times New Roman\', sans-serif;">' + layer.feature.properties['Vcategory']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_Valve_1'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_Other_Facilities_2.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['OWFType'] !== null?String('<div style="color: #000000; font-size: 10pt; font-family: \'MS Shell Dlg 2\', sans-serif;">' + layer.feature.properties['OWFType']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_Other_Facilities_2'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+                if (map.hasLayer(layer_Valve_1)) {
+                    if (map.getZoom() <= 18 && map.getZoom() >= 19) {
+                        layer_Valve_1.eachLayer(function (layer) {
+                            layer.openTooltip();
+                        });
+                    } else {
+                        layer_Valve_1.eachLayer(function (layer) {
+                            layer.closeTooltip();
+                        });
+                    }
+                }
+        map.addControl(new L.Control.Search({
+            layer: layer_Main_0,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'Road_Name'}));
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
+        resetLabels([layer_Main_0,layer_Valve_1,layer_Other_Facilities_2]);
+        map.on("zoomend", function(){
+            resetLabels([layer_Main_0,layer_Valve_1,layer_Other_Facilities_2]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_Main_0,layer_Valve_1,layer_Other_Facilities_2]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_Main_0,layer_Valve_1,layer_Other_Facilities_2]);
+        });
+        </script>
+    </body>
+</html>
